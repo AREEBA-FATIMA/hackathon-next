@@ -1,0 +1,47 @@
+{
+  "name": "hackathon-next",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "import-data": "node scripts/importSanityData.mjs"
+  },
+  "dependencies": {
+    "@clerk/elements": "^0.22.12",
+    "@clerk/nextjs": "^6.9.15",
+    "@heroicons/react": "^2.2.0",
+    "@radix-ui/react-navigation-menu": "^1.2.1",
+    "@sanity/client": "^6.24.4",
+    "@sanity/image-url": "^1.1.0",
+    "@sanity/vision": "^3.70.0",
+    "axios": "^1.7.9",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "dotenv": "^16.4.7",
+    "lucide-react": "^0.468.0",
+    "next": "^15.1.5",
+    "next-sanity": "^9.8.38",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "react-icons": "^5.4.0",
+    "react-is": "^19.0.0",
+    "sanity": "^3.70.0",
+    "slugify": "^1.6.6",
+    "styled-components": "^6.1.14",
+    "tailwind-merge": "^2.5.5",
+    "tailwindcss-animate": "^1.0.7"
+  },
+  "devDependencies": {
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^8",
+    "eslint-config-next": "15.0.4",
+    "postcss": "^8",
+    "tailwindcss": "^3.4.1",
+    "typescript": "^5"
+  }
+}
