@@ -85,8 +85,9 @@ const SearchResultsPage = () => {
               Oops, no products found!
             </h2>
             <p className="text-gray-500 mt-2">
-              We couldn't find anything matching your search. Try something else, and we'll do our best to find the perfect product for you!
+              We couldn&#39;t find anything matching your search. Try something else, and we&#39;ll do our best to find the perfect product for you!
             </p>
+
           </div>
         )}
 

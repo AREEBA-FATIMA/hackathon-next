@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { ClockIcon, ChatBubbleLeftEllipsisIcon } from "@heroicons/react/24/outline";
+import { Link } from "lucide-react";
 
 // Define a type for Post data
 interface Post {
@@ -139,12 +140,12 @@ export default function BlogDetail({ params }: { params: Promise<{ postId: strin
     <div className="bg-gray-100 min-h-screen py-12 px-6 md:px-40">
       {/* Back Button */}
       <div className="mb-8">
-        <a
-          href="/"
-          className="text-[#45bbed] font-medium text-sm inline-flex items-center hover:underline"
-        >
-          &larr; Back to All Posts
-        </a>
+      <Link
+            href="/"
+            className="text-[#45bbed] font-medium text-sm inline-flex items-center hover:underline"
+            >
+            &larr; Back to All Posts
+        </Link>
       </div>
 
       {/* Blog Header Section */}
