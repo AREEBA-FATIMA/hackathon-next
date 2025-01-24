@@ -41,13 +41,6 @@ next-env.d.ts
 # Ignore API folder inside src/app
 src/app/api/
 
-# Sanity configuration (exclude sanity files and tokens)
-sanity.json
-sanity.env
-sanity.config.ts
-
-# Clerk configuration (exclude Clerk keys)
-clerk.config.ts
 
 # Additional sensitive files
 *.key
