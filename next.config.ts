@@ -3,7 +3,12 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ['cdn.sanity.io'], // Allow images from Sanity CDN
+    remotePatterns:[
+      {
+        hostname:'cdn.sanity.io',
+      }
+    ]
+    // domains: ['cdn.sanity.io'], // Allow images from Sanity CDN
   },
 };
 
