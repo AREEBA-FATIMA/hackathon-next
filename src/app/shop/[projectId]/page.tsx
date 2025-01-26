@@ -40,7 +40,37 @@ const fetchProduct = async (projectId: string): Promise<Product | null> => {
     image{asset->{url}}
   }[0]`;
 
-  return client.fetch(query, { projectId });
+  const product = await client.fetch(query, { projectId });
+
+  console.log("Fetched Product Data:", product); // Log the fetched data to inspect the structure
+
+  return product;
+};
+
+// Function to map Tailwind classes to CSS hex values
+const mapTailwindColorToHex = (tailwindClass: string): string => {
+  const colorMap: Record<string, string> = {
+    "bg-blue-500": "#3B82F6",
+    "bg-green-500": "#10B981",
+    "bg-red-500": "#EF4444",
+    "bg-yellow-500": "#F59E0B",
+    "bg-purple-500": "#8B5CF6",
+    "bg-teal-500": "#14B8A6",  // Added teal
+    "bg-gray-500": "#6B7280",  // Added gray
+    "bg-black": "#000000",     // Added black
+    "bg-orange-500": "#FB923C", // Added orange
+    "bg-pink-500": "#E91E63"
+  };
+
+  // Check if the color class exists in the map
+  const mappedColor = colorMap[tailwindClass];
+
+  if (!mappedColor) {
+    console.warn(`Unrecognized color class: ${tailwindClass}`); // Log unrecognized colors
+    return "#ddd"; // Default fallback color
+  }
+
+  return mappedColor;
 };
 
 const ProductDetailPage = ({
@@ -103,6 +133,9 @@ const ProductDetailPage = ({
     return <div>Product not found.</div>; // Display if product is not found
   }
 
+  // Debugging: Log the colors to see what they look like
+  console.log("Colors fetched:", product.colors);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
@@ -148,14 +181,23 @@ const ProductDetailPage = ({
               <p className="text-sm font-semibold text-gray-700">Colors:</p>
               {product.colors && product.colors.length > 0 ? (
                 <div className="flex items-center mt-2 space-x-3">
-                  {product.colors.map((color: string, idx: number) => (
-                    <span
-                      key={idx}
-                      className="w-6 h-6 rounded-full"
-                      style={{ backgroundColor: color }}
-                      title={color}
-                    ></span>
-                  ))}
+                  {product.colors.map((color, idx) => {
+                    // Log each color before rendering
+                    console.log(`Rendering color: ${color}`);
+
+                    // Map the Tailwind color class to its corresponding hex code
+                    const validColor = mapTailwindColorToHex(color);
+                    return (
+                      <span
+                        key={idx}
+                        className="w-6 h-6 rounded-full border border-gray-300"
+                        style={{
+                          backgroundColor: validColor, // Apply the mapped hex color
+                        }}
+                        title={color}
+                      ></span>
+                    );
+                  })}
                 </div>
               ) : (
                 <p className="text-gray-500">No colors available</p>
