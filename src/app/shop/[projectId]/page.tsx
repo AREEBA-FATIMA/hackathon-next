@@ -68,7 +68,8 @@ const ProductDetailPage = ({
 
         setProduct(fetchedProduct);
       } catch (err) {
-        setError("Error fetching product data.");
+        console.error("Error fetching product data:", err); // Log the error
+        setError("Error fetching product data."); // Display user-friendly error message
       } finally {
         setLoading(false);
       }
@@ -78,15 +79,17 @@ const ProductDetailPage = ({
   }, [paramsPromise]);
 
   const handleAdd = (product: Product) => {
-    dispatch(addItemToCart({
-      id: product._id,
-      title: product.title,
-      price: product.price,
-      discountedPrice: product.discountedPrice,
-      quantity: 1, // Default quantity is 1
-      image: product.image?.asset?.url || '',
-      colors: product.colors || [],
-    }));
+    dispatch(
+      addItemToCart({
+        id: product._id,
+        title: product.title,
+        price: product.price,
+        discountedPrice: product.discountedPrice,
+        quantity: 1, // Default quantity is 1
+        image: product.image?.asset?.url || "",
+        colors: product.colors || [],
+      })
+    );
   };
 
   if (loading) {

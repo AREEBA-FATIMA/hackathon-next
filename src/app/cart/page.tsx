@@ -2,7 +2,7 @@
 
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../redux/store';
-import { removeItemFromCart, updateItemQuantity, clearCart, addItemToCart } from '../redux/cartslice';
+import { removeItemFromCart, updateItemQuantity, clearCart } from '../redux/cartslice';
 import Link from 'next/link';
 import Footer from '../[home]/footer/page';
 import Header from '@/components/Header';
@@ -36,18 +36,6 @@ const CartPage = () => {
     dispatch(clearCart());
   };
 
-  // Handle adding item to the cart (checks if it already exists)
-  const handleAddItem = (item: CartItem) => {
-    const existingItem = cartItems.find(cartItem => cartItem.id === item.id);
-    if (existingItem) {
-      // If the item exists, just update the quantity
-      dispatch(updateItemQuantity({ id: item.id, quantity: existingItem.quantity + 1 }));
-    } else {
-      // If the item doesn't exist, add it to the cart
-      dispatch(addItemToCart(item));
-    }
-  };
-
   // Calculate total price
   const getTotalPrice = (): number => {
     return cartItems.reduce((total: number, item: CartItem) => total + item.discountedPrice * item.quantity, 0);
@@ -63,12 +51,13 @@ const CartPage = () => {
           <div className="text-center py-16">
             <div className="text-6xl text-pink-500">🛒</div>
             <p className="text-xl text-gray-600 mt-4">Your cart is empty!</p>
-            <p className="text-md text-gray-400 mb-6">Looks like you haven't added anything yet. Let's go shopping!</p>
-            <Link href= '/shop'
-                    className="w-2/6 px-3 py-3 text-xs bg-[#14a2f5] text-white font-medium hover:bg-blue-600"
-                  >
-                    Go to Shop
-                  </Link>
+            <p className="text-md text-gray-400 mb-6">Looks like you haven&apos;t added anything yet. Let&apos;s go shopping!</p>
+            <Link
+              href="/shop"
+              className="w-2/6 px-3 py-3 text-xs bg-[#14a2f5] text-white font-medium hover:bg-blue-600"
+            >
+              Go to Shop
+            </Link>
           </div>
         ) : (
           <div>
@@ -124,9 +113,9 @@ const CartPage = () => {
               <div className="mt-4 sm:mt-0 flex items-center space-x-6">
                 <span className="text-xl font-semibold text-gray-800">Total: ${getTotalPrice().toFixed(2)}</span>
                 <Link href="/checkout">
-                <button
+                  <button
                     type="submit"
-                    className=" px-3 py-3 text-xs bg-[#14a2f5] text-white font-medium hover:bg-blue-600"
+                    className="px-3 py-3 text-xs bg-[#14a2f5] text-white font-medium hover:bg-blue-600"
                   >
                     Proceed to Checkout
                   </button>
