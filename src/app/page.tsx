@@ -32,7 +32,7 @@ export default function Home() {
         <h1 className="text-5xl font-bold my-8 uppercase">New Collection</h1>
         <p className="mb-6">We know how large objects will act, <br /> but things on a small scale.</p>
         <a
-          href="#"
+          href="/shop"
           className="bg-green-500 font-bold text-white py-2 px-4 rounded uppercase hover:bg-green-600"
         >
           Shop Now

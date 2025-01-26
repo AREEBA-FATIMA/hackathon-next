@@ -7,12 +7,15 @@ import { IoMdSearch } from "react-icons/io";
 import { FiUser, FiHeart } from "react-icons/fi";
 import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger } from "@/components/ui/navigation-menu";
 import { useRouter } from "next/navigation";
+import { RootState } from '@/app/redux/store';
+import { useSelector } from 'react-redux';
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [routerReady, setRouterReady] = useState(false); // Ensure router is ready
   const [isSearchVisible, setIsSearchVisible] = useState(false); // State to toggle search bar visibility on small/medium screens
   const router = useRouter();
+  const item = useSelector((state: RootState) => state.cart.items);
 
   useEffect(() => {
     setRouterReady(true); // Enable router usage after mounting
@@ -134,7 +137,7 @@ const Header = () => {
             <SignedIn>
               <UserButton />
             </SignedIn>
-            
+
             {/* Search Bar for Large Screens */}
             <div className="hidden md:flex items-center space-x-2">
               <form
@@ -168,7 +171,7 @@ const Header = () => {
 
             {/* Search Bar for Small/Medium Screens */}
             {isSearchVisible && (
-              <div className="md:hidden absolute top-16 left-0 w-full bg-white shadow-lg">
+              <div className="md:hidden absolute top-16 left-0 lg:w-full w-80 bg-white shadow-lg">
                 <form
                   onSubmit={handleSearchSubmit}
                   className="flex items-center p-2"
@@ -177,7 +180,7 @@ const Header = () => {
                     name="searchQuery"
                     type="text"
                     placeholder="Search..."
-                    className="w-[80%] max-w-[400px] p-2 border border-gray-300 rounded-md mx-auto"  // Limit width on small screens
+                    className="w-[90%] max-w-[280px] p-2 border border-gray-300 rounded-md mx-auto"  // Reduced width for small screens
                   />
                   <button
                     type="submit"
@@ -190,10 +193,12 @@ const Header = () => {
             )}
 
             {/* Cart Icon */}
+            <Link href="/cart" className="text-[#45bbed]">  
             <div className="flex items-center space-x-1">
               <FaCartPlus className="text-[#45bbed]" />
-              <span className="text-[#45bbed]">1</span>
+              <span className="text-[#45bbed]">{item.length}</span>
             </div>
+            </Link>
 
             {/* Favorite Icon */}
             <div className="hidden md:flex items-center space-x-1">
@@ -211,6 +216,20 @@ const Header = () => {
             </div>
           </div>
         </nav>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden absolute top-16 left-0 w-full bg-white shadow-lg z-20">
+            <ul className="space-y-4 text-center py-4">
+              <li><Link href="/" className="hover:underline">Home</Link></li>
+              <li><Link href="/shop" className="hover:underline">Shop</Link></li>
+              <li><Link href="/about" className="hover:underline">About</Link></li>
+              <li><Link href="/blogs" className="hover:underline">Blog</Link></li>
+              <li><Link href="/contact" className="hover:underline">Contact</Link></li>
+              <li><Link href="/teams" className="hover:underline">Team</Link></li>
+            </ul>
+          </div>
+        )}
       </header>
     </ClerkProvider>
   );

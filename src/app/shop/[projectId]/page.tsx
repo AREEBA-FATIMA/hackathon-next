@@ -1,12 +1,15 @@
-"use client"
-import { client } from "@/sanity/lib/client"; // Your Sanity client
-import { notFound } from "next/navigation"; // To handle when the product is not found
+"use client";
+
+import { client } from "@/sanity/lib/client";
+import { notFound } from "next/navigation";
 import Image from "next/image";
 import Header from "@/components/Header";
 import Footer from "@/app/[home]/footer/page";
-import { FaRegHeart, FaRegEye } from "react-icons/fa"; // Importing thin (outlined) icons from React Icons
-import { IoCartOutline } from "react-icons/io5"; // Importing thin (outlined) cart icon
-import { use } from "react"; // React hook for resolving promises
+import { FaRegHeart, FaRegEye } from "react-icons/fa";
+import { IoCartOutline } from "react-icons/io5";
+import { useEffect, useState } from "react"; // Correct hooks for async data fetching
+import { useDispatch } from "react-redux";
+import { addItemToCart } from "@/app/redux/cartslice";
 
 // Define the Product type
 type Product = {
@@ -25,7 +28,7 @@ type Product = {
 };
 
 // Fetch product details from Sanity
-const fetchProduct =  (projectId: string) => {
+const fetchProduct = async (projectId: string): Promise<Product | null> => {
   const query = `*[_type == "product" && _id == $projectId]{
     _id,
     title,
@@ -37,7 +40,7 @@ const fetchProduct =  (projectId: string) => {
     image{asset->{url}}
   }[0]`;
 
-  return  client.fetch(query, { projectId });
+  return client.fetch(query, { projectId });
 };
 
 const ProductDetailPage = ({
@@ -45,26 +48,68 @@ const ProductDetailPage = ({
 }: {
   params: Promise<{ projectId: string }>;
 }) => {
-  const params = use(paramsPromise);
-  const { projectId } = params;
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const dispatch = useDispatch();
 
-  const product: Product | null = use(fetchProduct(projectId));
+  // Handling params and product fetching asynchronously
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const params = await paramsPromise;
+        const { projectId } = params;
+        const fetchedProduct = await fetchProduct(projectId);
+
+        if (!fetchedProduct) {
+          notFound(); // Handle 404 if product not found
+          return;
+        }
+
+        setProduct(fetchedProduct);
+      } catch (err) {
+        setError("Error fetching product data.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [paramsPromise]);
+
+  const handleAdd = (product: Product) => {
+    dispatch(addItemToCart({
+      id: product._id,
+      title: product.title,
+      price: product.price,
+      discountedPrice: product.discountedPrice,
+      quantity: 1, // Default quantity is 1
+      image: product.image?.asset?.url || '',
+      colors: product.colors || [],
+    }));
+  };
+
+  if (loading) {
+    return <div>Loading...</div>; // Show loading state while data is being fetched
+  }
+
+  if (error) {
+    return <div>{error}</div>; // Handle errors
+  }
 
   if (!product) {
-    notFound(); // Show a 404 page if the product is not found
+    return <div>Product not found.</div>; // Display if product is not found
   }
 
   return (
     <div className="min-h-screen bg-gray-50">
       <Header />
-      {/* Breadcrumb */}
       <div className="py-4 px-6 text-base text-gray-600">
         <span>Home</span> <span className="mx-2">/</span> <span>Shop</span>
       </div>
 
       <div className="max-w-6xl mx-auto p-8">
         <div className="flex flex-col lg:flex-row">
-          {/* Left: Product Image */}
           <div className="w-full lg:w-1/2">
             <Image
               src={product.image?.asset?.url || ""}
@@ -75,18 +120,13 @@ const ProductDetailPage = ({
             />
           </div>
 
-          {/* Right: Product Details */}
           <div className="w-full lg:w-1/2 lg:pl-8 mt-8 lg:mt-0">
-            {/* Title */}
             <h1 className="text-3xl font-bold text-gray-800">{product.title}</h1>
-
-            {/* Rating */}
             <div className="flex text-2xl items-center mt-3 space-x-1 text-yellow-500">
               <span>★★★★★</span>
               <span className="text-sm text-gray-600">(5 Reviews)</span>
             </div>
 
-            {/* Price */}
             <div className="flex items-center mt-4">
               <span className="text-2xl font-bold text-[#23A6F0]">
                 ${product.discountedPrice}
@@ -96,15 +136,12 @@ const ProductDetailPage = ({
               </span>
             </div>
 
-            {/* Availability */}
             <p className="text-sm text-green-600 mt-2">
               Availability: <span className="font-semibold">{product.availability}</span>
             </p>
 
-            {/* Description */}
             <p className="mt-6 text-gray-600">{product.description}</p>
 
-            {/* Colors */}
             <div className="mt-6">
               <p className="text-sm font-semibold text-gray-700">Colors:</p>
               {product.colors && product.colors.length > 0 ? (
@@ -123,22 +160,19 @@ const ProductDetailPage = ({
               )}
             </div>
 
-            {/* Buttons */}
             <div className="flex items-center mt-8 space-x-4">
               <button className="px-6 py-2 bg-[#23A6F0] text-white font-semibold rounded hover:bg-blue-700">
                 Select Options
               </button>
               <div className="flex space-x-2 text-gray-500 text-xl">
-                {/* Using thin icons */}
-                <button
-                  className="relative group hover:text-gray-800 p-3 border-2 rounded-full hover:border-[#23A6F0] transition-all duration-300"
-                >
+                <button className="relative group hover:text-gray-800 p-3 border-2 rounded-full hover:border-[#23A6F0] transition-all duration-300">
                   <FaRegHeart />
                   <span className="p-2 absolute left-1/2 transform -translate-x-1/2 bottom-10 text-xs bg-gray-400 text-white opacity-0 group-hover:opacity-100 transition-all duration-300">
                     Wishlist
                   </span>
                 </button>
                 <button
+                  onClick={() => handleAdd(product)}
                   className="relative group hover:text-gray-800 p-3 border-2 rounded-full hover:border-[#23A6F0] transition-all duration-300"
                 >
                   <IoCartOutline />
@@ -146,9 +180,7 @@ const ProductDetailPage = ({
                     Cart
                   </span>
                 </button>
-                <button
-                  className="relative group hover:text-gray-800 p-3 border-2 rounded-full hover:border-[#23A6F0] transition-all duration-300"
-                >
+                <button className="relative group hover:text-gray-800 p-3 border-2 rounded-full hover:border-[#23A6F0] transition-all duration-300">
                   <FaRegEye />
                   <span className="p-2 absolute left-1/2 transform -translate-x-1/2 bottom-10 text-xs bg-gray-400 text-white opacity-0 group-hover:opacity-100 transition-all duration-300">
                     View
