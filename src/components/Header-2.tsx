@@ -17,6 +17,7 @@ const Header = () => {
   const router = useRouter();
   const item = useSelector((state: RootState) => state.cart.items);
 
+  // Ensuring router and client-only code is ready
   useEffect(() => {
     setRouterReady(true); // Enable router usage after mounting
   }, []);
@@ -39,6 +40,10 @@ const Header = () => {
   const toggleSearchBar = () => {
     setIsSearchVisible(!isSearchVisible);
   };
+
+  if (!routerReady) {
+    return null; // Prevent rendering before client-side code is ready
+  }
 
   return (
     <ClerkProvider>
@@ -194,10 +199,10 @@ const Header = () => {
 
             {/* Cart Icon */}
             <Link href="/cart" className="text-[#45bbed]">  
-            <div className="flex items-center space-x-1">
-              <FaCartPlus className="text-[#45bbed]" />
-              <span className="text-[#45bbed]">{item.length}</span>
-            </div>
+              <div className="flex items-center space-x-1">
+                <FaCartPlus className="text-[#45bbed]" />
+                <span className="text-[#45bbed]">{item.length}</span>
+              </div>
             </Link>
 
             {/* Favorite Icon */}
