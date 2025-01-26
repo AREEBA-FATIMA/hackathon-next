@@ -83,7 +83,6 @@ const ProductDetailPage = ({
       addItemToCart({
         id: product._id,
         title: product.title,
-        price: product.price,
         discountedPrice: product.discountedPrice,
         quantity: 1, // Default quantity is 1
         image: product.image?.asset?.url || "",
