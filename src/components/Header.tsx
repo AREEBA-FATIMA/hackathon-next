@@ -47,7 +47,7 @@ const Header = () => {
 
   return (
     <ClerkProvider>
-      <header className="relative bg-white">
+      <header className="relative bg-white border-b">
         {/* Top Header */}
         <div className="bg-[#04875b] text-xs text-white px-8 py-2 lg:flex justify-between items-center hidden md:flex">
           <div className="flex items-center">
